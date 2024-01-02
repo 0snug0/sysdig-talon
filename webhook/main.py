@@ -5,6 +5,7 @@ sidekick_ip = 'falco-sidekick'
 sidekick_port = '2801'
 sidekick_url = 'http://'+sidekick_ip+':'+sidekick_port
 
+# talon_ip = '34.171.132.116'
 talon_ip = 'falco-talon'
 talon_port = '2803'
 talon_url = 'http://'+talon_ip+':'+talon_port
@@ -107,7 +108,7 @@ def sev2prio(severity):
 
 
 def map_data(sysdig_secure_data):
-    falco_ts = sysdig_secure_data[0]['timestamp'].split('T')[1].rstrip('Z')
+    falco_ts = sysdig_secure_data[0]['timestampRFC3339Nano'].split('T')[1].rstrip('Z')
 
     label2fields = {
         "output_fields": {
@@ -122,7 +123,7 @@ def map_data(sysdig_secure_data):
         "rule": sysdig_secure_data[0]['content']['ruleName'],
         "source": sysdig_secure_data[0]['source'],
         "tags": sysdig_secure_data[0]['content']['ruleTags'],
-        "time": sysdig_secure_data[0]['timestamp'],
+        "time": sysdig_secure_data[0]['timestampRFC3339Nano'],
         "output_fields": sysdig_secure_data[0]['content']['fields']
     }
     return restructure
@@ -134,6 +135,7 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def respond():
     req = request.json
+    print(req)
     
     try:
         if req[0]['message'] == 'Hi from Sysdig!':

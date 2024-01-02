@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - image: ghcr.io/0snug0/sysdig-talon:main
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: sysdig-talon
         env:
         - name: FLASK_APP
