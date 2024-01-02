@@ -1,0 +1,34 @@
+- name: Rule Labelize                                                                                                                                                                     
+  match:                                                                                                                                                                                  
+    rules:                                                                                                                                                                                
+      - Terminal shell in container                                                                                                                                                       
+    output_fields:                                                                                                                                                                        
+      - k8s.ns.name!=kube-system                                                                                                                                                          
+  action:                                                                                                                                                                                 
+    name: kubernetes:labelize                                                                                                                                                             
+    parameters:                                                                                                                                                                           
+      labels:                                                                                                                                                                             
+        suspicious: "true"                                                                                                                                                                
+- name: Rule NetworkPolicy                                                                                                                                                                
+  match:                                                                                                                                                                                  
+    rules:                                                                                                                                                                                
+      - "Outbound Connection to C2 Servers"                                                                                                                                               
+  action:                                                                                                                                                                                 
+    name: kubernetes:networkpolicy                                                                                                                                                        
+  before: true                                                                                                                                                                            
+- name: Rule Terminate                                                                                                                                                                    
+  match:                                                                                                                                                                                  
+    rules:                                                                                                                                                                                
+      - "Outbound Connection to C2 Servers"                                                                                                                                               
+  action:                                                                                                                                                                                 
+    name: kubernetes:terminate                                                                                                                                                            
+    parameters:                                                                                                                                                                           
+      ignoreDaemonsets: true                                                                                                                                                              
+      ignoreStatefulsets: true 
+- name: Sensitive file opened
+  match:
+    rules:
+      - "Sensitive file untrusted"
+      - "Terminal shell in container"
+  action:
+    name: kubernetes:terminate
