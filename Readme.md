@@ -23,4 +23,7 @@ TODO: Add Secret Headers
 kubectl create -f webhook/deployment.yaml
 kubectl expose deployment webhook --port 80 --type LoadBalancer
 ```
+
+Check it out in action! After exec into a container, two actions are taken. Get the `/etc/os-release` output and then kill the container
+
 ![Alt text](<inaction.gif>)

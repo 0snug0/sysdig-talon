@@ -32,3 +32,9 @@
       - "Terminal shell in container"
   action:
     name: kubernetes:terminate
+
+- name: Get some info
+  action:
+    name: kubernetes:exec
+    parameters:
+      command: "cat /etc/os-release"
