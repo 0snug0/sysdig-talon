@@ -131,7 +131,7 @@ def map_data(sysdig_secure_data):
 
 app = Flask(__name__)
 
-@app.route('/webhook', methods=['POST'])
+@app.route('/', methods=['POST'])
 def respond():
     req = request.json
     
