@@ -30,7 +30,7 @@ priorityClassName: ""
 podAnnotations: {}
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 2803
   annotations: {}
     # networking.gke.io/load-balancer-type: Internal
