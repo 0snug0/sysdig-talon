@@ -23,3 +23,4 @@ TODO: Add Secret Headers
 kubectl create -f webhook/deployment.yaml
 kubectl expose deployment webhook --port 80 --type LoadBalancer
 ```
+![Alt text](<inaction.gif>)
