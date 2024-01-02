@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webhook
+  name: webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook
+  template:
+    metadata:
+      labels:
+        app: webhook
+    spec:
+      containers:
+      - image: ghcr.io/0snug0/sysdig-talon:main
+        imagePullPolicy: IfNotPresent
+        name: sysdig-talon
+        env:
+        - name: FLASK_APP
+          value: main.py

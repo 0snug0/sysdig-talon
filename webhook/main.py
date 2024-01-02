@@ -1,75 +1,75 @@
 from flask import Flask, request, Response
 import requests, json
 
-sidekick_ip = '34.72.59.3'
+sidekick_ip = 'falco-sidekick'
 sidekick_port = '2801'
 sidekick_url = 'http://'+sidekick_ip+':'+sidekick_port
 
-talon_ip = '34.171.132.116'
+talon_ip = 'falco-talon'
 talon_port = '2803'
 talon_url = 'http://'+talon_ip+':'+talon_port
 
 # Sysdig Secure JSON Ouput format
-sysdig_secure_data = [
-    {
-        "id": "17a69ae69f3620d461ba501b11da04b7",
-        "timestamp": "2023-05-25T13:44:05.478445995Z",
-        "category": "runtime",
-        "source": "syscall",
-        "name": "Sensitive Info Exfiltration",
-        "description": "Web server accessing forbidden directory",
-        "severity": 2,
-        "actions": [],
-        "content": {
-            "fields": {
-                "container.id": "ee97d9c4186f",
-                "container.image.repository": "docker.io/library/alpine",
-                "evt.time": 1685022245478445995,
-                "k8s.ns.name": "default",
-                "k8s.pod.name": "kubecon",
-                "proc.cmdline": "sh -c clear; (bash || ash || sh)",
-                "proc.name": "sh",
-                "proc.pname": "runc",
-                "proc.tty": 34816,
-                "user.loginuid": -1,
-                "user.name": "root"
-            },
-            "ruleName": "Outbound Connection to C2 Servers",
-            "output": "A shell was spawned in a container with an attached terminal (user=root user_loginuid=-1 k8s.ns=default k8s.pod=kubecon container=ee97d9c4186f shell=sh parent=runc cmdline=sh -c clear; (bash || ash || sh) terminal=34816 container_id=ee97d9c4186f image=docker.io/library/alpine)",
-            "ruleTags": [
-                "container",
-                "mitre_execution",
-                "shell"
-            ]},
-        "labels": {
-            "aws.accountId": "845151661675",
-            "aws.instanceId": "i-0ea769e3eb5e6e849",
-            "aws.region": "us-east-1",
-            "cloudProvider.account.id": "845151661675",
-            "cloudProvider.name": "aws",
-            "cloudProvider.region": "us-east-1",
-            "container.image.digest": "sha256:74941e12721385c8f3d5b9438294eae9050087badfc8c4c9e67195d098e40e11",
-            "container.image.id": "5e8b2f0509f4",
-            "container.image.repo": "docker.io/sysdiglabs/workshop-forensics-1-phpping",
-            "container.image.tag": "0.1",
-            "container.label.io.kubernetes.container.name": "store-frontend-ping-php",
-            "container.label.io.kubernetes.pod.name": "store-frontend-ping-php-6d99c8958-dvng2",
-            "container.label.io.kubernetes.pod.namespace": "sensitive-info-exfiltration",
-            "container.name": "store-frontend-ping-php",
-            "host.hostName": "falco-xczjd",
-            "host.mac": "02:0e:ec:d5:bc:a7",
-            "kubernetes.cluster.name": "demo-kube-aws",
-            "kubernetes.deployment.name": "store-frontend-ping-php",
-            "kubernetes.namespace.name": "default",
-            "kubernetes.node.name": "i-0ea769e3eb5e6e849",
-            "kubernetes.pod.name": "ubuntu3-577cd75565-cs49p",
-            "kubernetes.replicaSet.name": "store-frontend-ping-php-6d99c8958",
-            "kubernetes.service.name": "php",
-            "kubernetes.workload.name": "store-frontend-ping-php",
-            "kubernetes.workload.type": "deployment",
-            "process.name": "sh"
-        }
-    }]
+# sysdig_secure_data = [
+#     {
+#         "id": "17a69ae69f3620d461ba501b11da04b7",
+#         "timestamp": "2023-05-25T13:44:05.478445995Z",
+#         "category": "runtime",
+#         "source": "syscall",
+#         "name": "Sensitive Info Exfiltration",
+#         "description": "Web server accessing forbidden directory",
+#         "severity": 2,
+#         "actions": [],
+#         "content": {
+#             "fields": {
+#                 "container.id": "ee97d9c4186f",
+#                 "container.image.repository": "docker.io/library/alpine",
+#                 "evt.time": 1685022245478445995,
+#                 "k8s.ns.name": "default",
+#                 "k8s.pod.name": "kubecon",
+#                 "proc.cmdline": "sh -c clear; (bash || ash || sh)",
+#                 "proc.name": "sh",
+#                 "proc.pname": "runc",
+#                 "proc.tty": 34816,
+#                 "user.loginuid": -1,
+#                 "user.name": "root"
+#             },
+#             "ruleName": "Outbound Connection to C2 Servers",
+#             "output": "A shell was spawned in a container with an attached terminal (user=root user_loginuid=-1 k8s.ns=default k8s.pod=kubecon container=ee97d9c4186f shell=sh parent=runc cmdline=sh -c clear; (bash || ash || sh) terminal=34816 container_id=ee97d9c4186f image=docker.io/library/alpine)",
+#             "ruleTags": [
+#                 "container",
+#                 "mitre_execution",
+#                 "shell"
+#             ]},
+#         "labels": {
+#             "aws.accountId": "845151661675",
+#             "aws.instanceId": "i-0ea769e3eb5e6e849",
+#             "aws.region": "us-east-1",
+#             "cloudProvider.account.id": "845151661675",
+#             "cloudProvider.name": "aws",
+#             "cloudProvider.region": "us-east-1",
+#             "container.image.digest": "sha256:74941e12721385c8f3d5b9438294eae9050087badfc8c4c9e67195d098e40e11",
+#             "container.image.id": "5e8b2f0509f4",
+#             "container.image.repo": "docker.io/sysdiglabs/workshop-forensics-1-phpping",
+#             "container.image.tag": "0.1",
+#             "container.label.io.kubernetes.container.name": "store-frontend-ping-php",
+#             "container.label.io.kubernetes.pod.name": "store-frontend-ping-php-6d99c8958-dvng2",
+#             "container.label.io.kubernetes.pod.namespace": "sensitive-info-exfiltration",
+#             "container.name": "store-frontend-ping-php",
+#             "host.hostName": "falco-xczjd",
+#             "host.mac": "02:0e:ec:d5:bc:a7",
+#             "kubernetes.cluster.name": "demo-kube-aws",
+#             "kubernetes.deployment.name": "store-frontend-ping-php",
+#             "kubernetes.namespace.name": "default",
+#             "kubernetes.node.name": "i-0ea769e3eb5e6e849",
+#             "kubernetes.pod.name": "ubuntu3-577cd75565-cs49p",
+#             "kubernetes.replicaSet.name": "store-frontend-ping-php-6d99c8958",
+#             "kubernetes.service.name": "php",
+#             "kubernetes.workload.name": "store-frontend-ping-php",
+#             "kubernetes.workload.type": "deployment",
+#             "process.name": "sh"
+#         }
+#     }]
 
 # Example output of falco
 '''
@@ -105,9 +105,10 @@ def sev2prio(severity):
     prio = ['Emergency', 'Alert', 'Critical', 'Error', 'Warning', 'Notice', 'Informational', 'Debug']
     return prio[severity]
 
-falco_ts = sysdig_secure_data[0]['timestamp'].split('T')[1].rstrip('Z')
 
 def map_data(sysdig_secure_data):
+    falco_ts = sysdig_secure_data[0]['timestamp'].split('T')[1].rstrip('Z')
+
     label2fields = {
         "output_fields": {
             "k8s.ns.name": sysdig_secure_data[0]['labels']['kubernetes.namespace.name'],
@@ -132,11 +133,19 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST'])
 def respond():
+    req = request.json
+    
+    try:
+        if req[0]['message'] == 'Hi from Sysdig!':
+            res = json.dumps(req)
+            return Response(response=res, status=200)
+    except:
+        pass
     res = json.dumps(map_data(request.json), indent=4)
     r = requests.post(talon_url, data=res)
     print(r.status_code)
-
     print(res)
+
     return Response(response=res, status=200)
 
 '''
